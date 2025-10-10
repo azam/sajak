@@ -1,0 +1,3 @@
+[submodule "koopa/koopa"]
+	path = koopa/koopa
+	url = https://github.com/krisds/koopa

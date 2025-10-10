@@ -1,0 +1,39 @@
+[versions]
+junit = "5.13.4"
+google-java-format = "1.28.0"
+ktlint = "1.7.1"
+jacoco = "0.8.13"
+lombok-plugin = "9.0.0-rc2"
+gradle-versions-plugin = "0.53.0"
+spotless-plugin = "8.0.0"
+
+[libraries]
+jakarta-annotation-api = { group = "jakarta.annotation", name = "jakarta.annotation-api", version = "3.0.0" }
+junit-pioneer = { group = "org.junit-pioneer", name = "junit-pioneer", version = "2.3.0" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version = "6.0.0" }
+lombok = { group = "org.projectlombok", name = "lombok", version = "1.18.42" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
+logback-classic = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.18" }
+javapoet = { group = "com.palantir.javapoet", name = "javapoet", version = "0.7.0" }
+proleap-cobol-parser = { group = "io.github.uwol", name = "proleap-cobol-parser", version = "2.4.0" }
+google-java-format = { group = "com.google.googlejavaformat", name = "google-java-format", version.ref = "google-java-format" }
+
+# plugin
+lombok-plugin = { group = "io.freefair.lombok", name = "io.freefair.lombok.gradle.plugin", version.ref = "lombok-plugin" }
+gradle-versions-plugin = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version.ref = "gradle-versions-plugin" }
+spotless-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless-plugin" }
+# koopa dependencies
+koopa-dep-jaxen = { group = "jaxen", name = "jaxen", version = "1.1.1" }
+koopa-dep-log4j = { group = "log4j", name = "log4j", version = "1.2.16" }
+koopa-dep-opencsv = { group = "net.sf.opencsv", name = "opencsv", version = "2.3" }
+koopa-dep-swingx = { group = "org.swinglabs", name = "swingx", version = "1.0" }
+koopa-dep-junit = { group = "junit", name = "junit", version = "4.8.1" }
+
+[plugins]
+lombok = { id = "io.freefair.lombok", version.ref = "lombok-plugin" }
+gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions-plugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless-plugin" }
+foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver", version = "1.0.0" }

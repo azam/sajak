@@ -1,0 +1,42 @@
+{
+  "name": "Java Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/base:trixie",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "25",
+      "jdkDistro": "oracle",
+      "installGradle": true,
+      "gradleVersion": "9.1.0"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": false
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anweber.vscode-httpyac",
+        "tamasfe.even-better-toml"
+      ],
+      "settings": {
+        "java.jdt.ls.java.home": "/usr/local/sdkman/candidates/java/25-oracle",
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-25",
+            "path": "/usr/local/sdkman/candidates/java/25-oracle"
+          }
+        ],
+        "java.server.launchMode": "Standard",
+        "java.import.gradle.version": "9.1.0",
+        "java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/25-oracle",
+        "java.compile.nullAnalysis.mode": "automatic",
+        "java.configuration.updateBuildConfiguration": "interactive",
+        "java.maven.downloadSources": false,
+        "java.eclipse.downloadSources": false,
+        "telemetry.telemetryLevel": "off",
+        "redhat.telemetry.enabled": false,
+        "workbench.startupEditor": "none"
+      }
+    }
+  }
+}

@@ -10,8 +10,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import koopa.core.trees.Tree;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -46,11 +48,11 @@ public abstract sealed class TreeBase
         SourceUnit,
         Statement,
         WorkingStorageSection {
-  protected static final Map<String, Class<? extends TreeBase>> classNames =
-      collectClassNames(TreeBase.class);
+  protected static final Map<String, Class<? extends TreeBase>> subClasses =
+      collectSubClasses(TreeBase.class);
 
   @SuppressWarnings("unchecked")
-  private static Map<String, Class<? extends TreeBase>> collectClassNames(
+  private static Map<String, Class<? extends TreeBase>> collectSubClasses(
       Class<? extends TreeBase> baseCls) {
     Map<String, Class<? extends TreeBase>> map = new HashMap<>();
     for (Class<?> cls : baseCls.getPermittedSubclasses()) {
@@ -60,7 +62,8 @@ public abstract sealed class TreeBase
           int nameFieldModifiers = nameField.getModifiers();
           if (String.class.equals(nameField.getType())
               && Modifier.isStatic(nameFieldModifiers)
-              && Modifier.isPublic(nameFieldModifiers)) {
+              && (Modifier.isPublic(nameFieldModifiers)
+                  || Modifier.isProtected(nameFieldModifiers))) {
             String name = (String) nameField.get(null);
             map.put(name, (Class<? extends TreeBase>) cls);
           }
@@ -69,12 +72,45 @@ public abstract sealed class TreeBase
         }
         int clsModifier = cls.getModifiers();
         if (Modifier.isAbstract(clsModifier) && cls.isSealed()) {
-          map.putAll(collectClassNames((Class<? extends TreeBase>) cls));
+          map.putAll(collectSubClasses((Class<? extends TreeBase>) cls));
         }
       }
     }
-    map.forEach((k, v) -> log.debug("{} -> {}", k, v.getName()));
     return Collections.unmodifiableMap(map);
+  }
+
+  protected static Set<String> collectSubClassNames(Class<?> baseCls) {
+    Set<String> set = new HashSet<>();
+    for (Class<?> cls : baseCls.getPermittedSubclasses()) {
+      try {
+        Field nameField = cls.getField("NAME");
+        int nameFieldModifiers = nameField.getModifiers();
+        if (String.class.equals(nameField.getType())
+            && Modifier.isStatic(nameFieldModifiers)
+            && (Modifier.isPublic(nameFieldModifiers)
+                || Modifier.isProtected(nameFieldModifiers))) {
+          String name = (String) nameField.get(null);
+          set.add(name);
+        }
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        // ignore
+      }
+    }
+    return Collections.unmodifiableSet(set);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected static <T extends TreeBase> T from(Tree value) {
+    Class<? extends TreeBase> cls = TreeBase.subClasses.get(value.getName());
+    try {
+      return (T) cls.getConstructor(Tree.class).newInstance(value);
+    } catch (ClassCastException
+        | InvocationTargetException
+        | InstantiationException
+        | IllegalAccessException
+        | NoSuchMethodException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   private final Tree tree;

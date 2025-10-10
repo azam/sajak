@@ -1,10 +1,9 @@
 package io.azam.sajak.pantun;
 
 import jakarta.annotation.Nonnull;
-import lombok.Builder;
-
 import java.nio.file.Path;
 import java.util.Collection;
+import lombok.Builder;
 
 @Builder(buildMethodName = "__build")
 public record Config(
@@ -13,8 +12,7 @@ public record Config(
     @Nonnull Collection<String> resouurcePaths,
     @Nonnull Collection<String> resourceCopybooks,
     @Nonnull Path outputPath,
-    @Nonnull String procedurePackage
-) {
+    @Nonnull String procedurePackage) {
   public static class ConfigBuilder {
     public Config build() {
       if (procedurePackage == null || procedurePackage.isBlank())

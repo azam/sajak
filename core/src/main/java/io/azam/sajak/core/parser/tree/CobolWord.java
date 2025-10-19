@@ -7,15 +7,16 @@ import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
-public final class DataName extends TreeBase {
-  public static final String NAME = "dataName";
+public final class CobolWord extends TreeBase {
+  public static final String NAME = "cobolWord";
 
-  public DataName(@Nonnull Tree tree) {
+  public CobolWord(@Nonnull Tree tree) {
     super(tree);
   }
 
   @ToString.Include
-  public CobolWord cobolWord() {
-    return childElement(CobolWord.class, CobolWord.NAME);
+  @Override
+  public String programText() {
+    return super.programText();
   }
 }

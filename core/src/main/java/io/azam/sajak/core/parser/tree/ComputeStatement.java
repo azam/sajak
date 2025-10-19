@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
-public final class ComputeStatement extends Statement {
+public final class ComputeStatement extends TreeBase implements Statement.SubTypes {
   public static final String NAME = "computeStatement";
 
   public ComputeStatement(Tree tree) {

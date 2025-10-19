@@ -12,6 +12,7 @@ import io.azam.sajak.core.parser.tree.ProcedureDivision;
 import io.azam.sajak.core.parser.tree.ProgramDefinition;
 import io.azam.sajak.core.parser.tree.Sentence;
 import io.azam.sajak.core.parser.tree.SourceUnit;
+import io.azam.sajak.core.parser.tree.Statement;
 import io.azam.sajak.core.parser.tree.WorkingStorageSection;
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +45,11 @@ public class ParserTest {
     assertFalse(workingStorageSection0.recordDescriptionEntries().isEmpty());
     ProcedureDivision procedureDivision0 = programDefinition0.procedureDivision();
     assertNotNull(procedureDivision0);
-    List<Sentence> sentences0 = procedureDivision0.sentences();
-    log.info("{}", sentences0);
+    List<Sentence> sentences = procedureDivision0.sentences();
+    assertNotNull(sentences);
+    assertNotNull(sentences.getFirst());
+    Statement statement0 = sentences.getFirst().statement();
+    log.info("{}", statement0);
+    log.info("{}", statement0.subType());
   }
 }

@@ -7,10 +7,15 @@ import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
-public final class Corresponding extends TreeBase {
+public final class Corresponding extends TreeBase implements MoveStatement.SourceTypes {
   public static final String NAME = "corresponding";
 
   public Corresponding(@Nonnull Tree tree) {
     super(tree);
+  }
+
+  @ToString.Include
+  public Identifier identifier() {
+    return childElement(Identifier.class, Identifier.NAME);
   }
 }

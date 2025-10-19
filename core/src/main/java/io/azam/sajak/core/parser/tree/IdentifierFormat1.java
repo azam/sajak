@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
-public final class IdentifierFormat1 extends TreeBase {
+public final class IdentifierFormat1 extends TreeBase implements Identifier.SubTypes {
   public static final String NAME = "identifier_format1";
 
   public IdentifierFormat1(@Nonnull Tree tree) {

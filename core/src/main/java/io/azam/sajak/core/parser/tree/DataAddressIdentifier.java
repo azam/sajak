@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
-public final class DataAddressIdentifier extends TreeBase {
+public final class DataAddressIdentifier extends TreeBase implements Identifier.SubTypes {
   public static final String NAME = "dataAddressIdentifier";
 
   public DataAddressIdentifier(@Nonnull Tree tree) {

@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
 public abstract sealed class TreeBase
-    permits CompilationGroup,
+    permits CobolWord,
+        CompilationGroup,
+        ComputeStatement,
         Corresponding,
         DataAddressIdentifier,
         DataDescriptionEntry,
@@ -37,6 +40,7 @@ public abstract sealed class TreeBase
         IdentifierFormat6,
         LinkageSection,
         Literal,
+        MoveStatement,
         ProcedureDivision,
         ProgramDefinition,
         QualifiedDataName,
@@ -48,8 +52,10 @@ public abstract sealed class TreeBase
         SourceUnit,
         Statement,
         WorkingStorageSection {
-  protected static final Map<String, Class<? extends TreeBase>> subClasses =
+  protected static final Map<String, Class<? extends TreeBase>> SUB_CLASSES =
       collectSubClasses(TreeBase.class);
+  protected static final Map<Class<? extends TreeBase>, Set<String>> SUB_CLASS_NAMES =
+      collectAllSubClassNames(TreeBase.class);
 
   @SuppressWarnings("unchecked")
   private static Map<String, Class<? extends TreeBase>> collectSubClasses(
@@ -79,6 +85,21 @@ public abstract sealed class TreeBase
     return Collections.unmodifiableMap(map);
   }
 
+  @SuppressWarnings("unchecked")
+  protected static Map<Class<? extends TreeBase>, Set<String>> collectAllSubClassNames(
+      Class<? extends TreeBase> baseCls) {
+    if (!baseCls.isSealed()) return Collections.emptyMap();
+    Map<Class<? extends TreeBase>, Set<String>> map = new HashMap<>();
+    map.put(baseCls, collectSubClassNames(baseCls));
+    for (Class<?> cls : baseCls.getPermittedSubclasses()) {
+      int clsModifier = baseCls.getModifiers();
+      if (Modifier.isAbstract(clsModifier) && cls.isSealed() && cls.isAssignableFrom(baseCls)) {
+        map.putAll(collectAllSubClassNames((Class<? extends TreeBase>) cls));
+      }
+    }
+    return Collections.unmodifiableMap(map);
+  }
+
   protected static Set<String> collectSubClassNames(Class<?> baseCls) {
     Set<String> set = new HashSet<>();
     for (Class<?> cls : baseCls.getPermittedSubclasses()) {
@@ -101,7 +122,7 @@ public abstract sealed class TreeBase
 
   @SuppressWarnings("unchecked")
   protected static <T extends TreeBase> T from(Tree value) {
-    Class<? extends TreeBase> cls = TreeBase.subClasses.get(value.getName());
+    Class<? extends TreeBase> cls = TreeBase.SUB_CLASSES.get(value.getName());
     try {
       return (T) cls.getConstructor(Tree.class).newInstance(value);
     } catch (ClassCastException
@@ -130,6 +151,21 @@ public abstract sealed class TreeBase
 
   protected String programText() {
     return tree.getProgramText();
+  }
+
+  protected TreeBase eitherChildElement(Collection<String> names) {
+    Tree child = eitherChild(names);
+    if (child == null) return null;
+    Class<? extends TreeBase> cls = TreeBase.SUB_CLASSES.get(child.getName());
+    try {
+      Constructor<? extends TreeBase> ctor = cls.getConstructor(Tree.class);
+      return ctor.newInstance(child);
+    } catch (NoSuchMethodException
+        | InvocationTargetException
+        | InstantiationException
+        | IllegalAccessException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   protected <T extends TreeBase> T childElement(@Nonnull Class<T> cls, String... names) {
@@ -164,6 +200,14 @@ public abstract sealed class TreeBase
     }
   }
 
+  protected Tree eitherChild(@Nonnull Collection<String> names) {
+    for (String name : names) {
+      Tree child = tree.getChild(name);
+      if (child == null) return null;
+    }
+    return null;
+  }
+
   protected Tree child(@Nonnull String... names) {
     Tree child = null;
     for (String name : names) {
@@ -187,6 +231,28 @@ public abstract sealed class TreeBase
   protected String childProgramText(String... names) {
     Tree child = child(names);
     return child == null ? null : child.getProgramText();
+  }
+
+  protected <B, T extends TreeBase> T eitherSubType(@Nonnull Class<B> baseCls) {
+    for (Class<?> cls : baseCls.getPermittedSubclasses()) {
+      if (!TreeBase.class.isAssignableFrom(cls)) continue;
+      try {
+        Field nameField = cls.getField("NAME");
+        int nameFieldModifiers = nameField.getModifiers();
+        if (String.class.equals(nameField.getType())
+            && Modifier.isStatic(nameFieldModifiers)
+            && (Modifier.isPublic(nameFieldModifiers)
+                || Modifier.isProtected(nameFieldModifiers))) {
+          String name = (String) nameField.get(null);
+          Tree child = tree.getChild(name);
+          if (child == null) continue;
+          return from(child);
+        }
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    return null;
   }
 
   public void printTree() {

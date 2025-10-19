@@ -13,4 +13,12 @@ public final class Identifier extends TreeBase {
   public Identifier(@Nonnull Tree tree) {
     super(tree);
   }
+
+  @ToString.Include
+  public SubTypes subType() {
+    return eitherSubType(SubTypes.class);
+  }
+
+  public sealed interface SubTypes
+      permits DataAddressIdentifier, IdentifierFormat1, IdentifierFormat2, IdentifierFormat6 {}
 }

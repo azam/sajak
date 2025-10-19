@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
-public final class Literal extends TreeBase {
+public final class Literal extends TreeBase implements MoveStatement.SourceTypes {
   public static final String NAME = "literal";
 
   public Literal(@Nonnull Tree tree) {

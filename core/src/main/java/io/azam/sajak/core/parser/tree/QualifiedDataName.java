@@ -13,4 +13,9 @@ public final class QualifiedDataName extends TreeBase {
   public QualifiedDataName(@Nonnull Tree tree) {
     super(tree);
   }
+
+  @ToString.Include
+  public DataName dataName() {
+    return childElement(DataName.class, DataName.NAME);
+  }
 }

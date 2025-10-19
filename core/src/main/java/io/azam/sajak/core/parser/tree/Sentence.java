@@ -16,6 +16,6 @@ public final class Sentence extends TreeBase {
 
   @ToString.Include
   public Statement statement() {
-    return Statement.from(child(Statement.NAME));
+    return childElement(Statement.class, Statement.NAME);
   }
 }

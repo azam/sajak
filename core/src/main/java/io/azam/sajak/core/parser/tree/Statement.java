@@ -18,5 +18,5 @@ public final class Statement extends TreeBase {
     return eitherSubType(SubTypes.class);
   }
 
-  public sealed interface SubTypes permits ComputeStatement, MoveStatement {}
+  public sealed interface SubTypes extends TreeType permits ComputeStatement, MoveStatement {}
 }

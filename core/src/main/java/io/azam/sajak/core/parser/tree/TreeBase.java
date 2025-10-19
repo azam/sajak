@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode
-public abstract sealed class TreeBase
+public abstract sealed class TreeBase implements TreeType
     permits CobolWord,
         CompilationGroup,
         ComputeStatement,
@@ -145,11 +145,13 @@ public abstract sealed class TreeBase
     this.tree = tree;
   }
 
-  protected String text() {
+  @Override
+  public String text() {
     return tree.getText();
   }
 
-  protected String programText() {
+  @Override
+  public String programText() {
     return tree.getProgramText();
   }
 
@@ -259,7 +261,7 @@ public abstract sealed class TreeBase
     printTree(null);
   }
 
-  public void printTree(String prefix) {
+  private void printTree(String prefix) {
     printTree(prefix, tree, 1);
   }
 

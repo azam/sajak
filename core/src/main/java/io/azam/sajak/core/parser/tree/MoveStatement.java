@@ -29,5 +29,5 @@ public final class MoveStatement extends TreeBase implements Statement.SubTypes 
     return childElements(Identifier.class, Identifier.NAME);
   }
 
-  public sealed interface SourceTypes permits Corresponding, Literal, Sending {}
+  public sealed interface SourceTypes extends TreeType permits Corresponding, Literal, Sending {}
 }

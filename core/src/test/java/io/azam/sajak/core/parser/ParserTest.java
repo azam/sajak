@@ -49,7 +49,6 @@ public class ParserTest {
     assertNotNull(sentences);
     assertNotNull(sentences.getFirst());
     Statement statement0 = sentences.getFirst().statement();
-    log.info("{}", statement0);
-    log.info("{}", statement0.subType());
+    log.info("{}", compilationGroup);
   }
 }

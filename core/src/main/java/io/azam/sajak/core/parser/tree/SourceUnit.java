@@ -14,6 +14,7 @@ public final class SourceUnit extends TreeBase {
     super(tree);
   }
 
+  @ToString.Include
   public ProgramDefinition programDefinition() {
     return childElement(ProgramDefinition.class, ProgramDefinition.NAME);
   }
